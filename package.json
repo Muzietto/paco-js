@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/Muzietto/paco-js/issues"
   },
-  "homepage": "https://github.com/Muzietto/paco-js#readme"
+  "homepage": "https://github.com/Muzietto/paco-js#readme",
+  "devDependencies": {
+    "webpack": "^4.41.2"
+  }
 }
