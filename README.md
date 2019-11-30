@@ -7,7 +7,5 @@ Test page is [here](https://muzietto.github.io/geiesmonads/parsers/Mocha_Parser_
 
 Live examples page is [here](https://muzietto.github.io/geiesmonads/parsers/Console_Parser_Examples.html).
 
-A [JSON parser](https://muzietto.github.io/geiesmonads/parsers/js/json_parsers.js) is under construction, and it is tested [here](https://muzietto.github.io/geiesmonads/parsers/Mocha_JSON_Parser_Tests.html).
-
 NB - with a big credit due to [Understanding Parser Combinators](https://fsharpforfunandprofit.com/posts/understanding-parser-combinators/) and to [Paco](https://github.com/gabrielelana/paco).
 
