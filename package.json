@@ -2,10 +2,7 @@
   "name": "paco-js",
   "version": "0.0.1",
   "description": "parser combinators for the browser",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
+  "main": "src/parser.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Muzietto/paco-js.git"
@@ -19,11 +16,5 @@
   "bugs": {
     "url": "https://github.com/Muzietto/paco-js/issues"
   },
-  "homepage": "https://github.com/Muzietto/paco-js#readme",
-  "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "babel-loader": "^8.0.6",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
-  }
+  "homepage": "https://github.com/Muzietto/paco-js#readme"
 }
