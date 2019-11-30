@@ -1,6 +1,6 @@
 {
   "name": "paco-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "parser combinators for the browser",
   "main": "src/parser.js",
   "repository": {
