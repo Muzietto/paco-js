@@ -1,7 +1,7 @@
 # paco-js
 Parser combinators for the browser
 
-File [parsers.js](https://github.com/Muzietto/geiesmonads/blob/master/parsers/js/parsers.js) contains an implementation of __chainable parser combinators__, featuring both __applicative__ and __monadic__ interfaces.
+File [parsers.js](https://github.com/Muzietto/paco-js/blob/master/src/parsers.js) contains an implementation of __chainable parser combinators__, featuring both __applicative__ and __monadic__ interfaces.
 
 Test page is [here](https://muzietto.github.io/geiesmonads/parsers/Mocha_Parser_Combinators_Tests.html).
 
