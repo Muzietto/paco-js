@@ -1,8 +1,8 @@
 {
   "name": "paco-js",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "parser combinators for the browser",
-  "main": "src/parser.js",
+  "main": "src/parsers.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Muzietto/paco-js.git"

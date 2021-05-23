@@ -31,19 +31,17 @@ const predicateBasedParser = (pred, label) => pos => {
   return Validation.Failure(Tuple.Triple(label, 'unexpected char: ' + optChar.value, pos));
 };
 
-export { charParser, digitParser, predicateBasedParser };
-
-export function pchar(char) {
+function pchar(char) {
   const label = 'pchar_' + char;
   const result = pos => charParser(char)(pos);
   return parser(result, label).setLabel(label);
 }
 
-export function pdigit(digit) {
+function pdigit(digit) {
   return parser(pos => digitParser(digit)(pos), 'pdigit_' + digit);
 }
 
-export function andThen(p1, p2) {
+function andThen(p1, p2) {
   const label = p1.label + ' andThen ' + p2.label;
   return parser(pos => {
     const res1 = p1.run(pos);
@@ -57,7 +55,7 @@ export function andThen(p1, p2) {
 }
 
 // using bind
-export function andThenBind(p1, p2) {
+function andThenBind(p1, p2) {
   return p1.bind(parsedValue1 => {
     return p2.bind(parsedValue2 => {
       return returnP(Tuple.Pair(parsedValue1, parsedValue2));
@@ -65,7 +63,7 @@ export function andThenBind(p1, p2) {
   }).setLabel(p1.label + ' andThen ' + p2.label);
 }
 
-export function orElse(p1, p2) {
+function orElse(p1, p2) {
   const label = p1.label + ' orElse ' + p2.label;
   return parser(pos => {
     const res1 = p1.run(pos);
@@ -80,23 +78,23 @@ export const fail = parser(pos => Validation.Failure(Tuple.Triple('', 'fail', po
 
 export const succeed = parser(pos => Validation.Success(Tuple.Pair(Tuple.Pair('', pos), 'succeed')));
 
-export function choice(parsers) {
+function choice(parsers) {
   return parsers.reduceRight((rest, curr) => orElse(curr, rest), fail)
     .setLabel('choice ' + parsers.reduce((acc, curr) => acc + '/' + curr.label, ''));
 }
 
-export function anyOf(charsArray) {
+function anyOf(charsArray) {
   return choice(charsArray.map(pchar))
     .setLabel('anyOf ' + charsArray.reduce((acc, curr) => acc + curr, ''));
 }
 
-export const lowercaseP = anyOf(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']).setLabel('lowercaseP');
-export const uppercaseP = anyOf(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']).setLabel('uppercaseP');
-export const letterP = lowercaseP.orElse(uppercaseP).setLabel('letterP');
-export const digitP = anyOf(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']).setLabel('digitP');
-export const whiteP = anyOf([' ', '\t', '\n', '\r']).setLabel('whiteP');
+const lowercaseP = anyOf(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']).setLabel('lowercaseP');
+const uppercaseP = anyOf(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']).setLabel('uppercaseP');
+const letterP = lowercaseP.orElse(uppercaseP).setLabel('letterP');
+const digitP = anyOf(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']).setLabel('digitP');
+const whiteP = anyOf([' ', '\t', '\n', '\r']).setLabel('whiteP');
 
-export function fmap(fab, parser1) {
+function fmap(fab, parser1) {
   const label = parser1.label + ' fmap ' + fab.toString();
   return parser(pos => {
     const res = parser1.run(pos);
@@ -105,19 +103,19 @@ export function fmap(fab, parser1) {
   }, label);
 }
 
-export function returnP(value) {
+function returnP(value) {
   return parser(pos => Validation.Success(Tuple.Pair(value, pos)), value);
 }
 
 // parser(a -> b) -> parser(a) -> parser(b)
-export function applyPx(fP) {
+function applyPx(fP) {
   return function(xP) {
     return andThen(fP, xP).fmap(([f, x]) => f(x));
   };
 }
 
 // using bind
-export function applyP(fP) {
+function applyP(fP) {
   return function(xP) {
     return fP.bind(parsedValuef => {
       return xP.bind(parsedValuex => {
@@ -127,7 +125,7 @@ export function applyP(fP) {
   };
 }
 
-export function lift2(faab) {
+function lift2(faab) {
   return function(parser1) {
     return function(parser2) {
       // return applyP(applyP(returnP(faab))(parser1))(parser2);
@@ -137,7 +135,7 @@ export function lift2(faab) {
 }
 
 // using lift2(cons)
-export function sequenceP(parsers) {
+function sequenceP(parsers) {
   return parsers
     .reduceRight((rest, curr) => {
       return lift2(_cons)(curr)(rest);
@@ -145,25 +143,25 @@ export function sequenceP(parsers) {
 }
 
 // using naive andThen && fmap --> returns strings, not arrays!
-export function sequenceP2(parsers) {
+function sequenceP2(parsers) {
   return parsers
     .reduceRight((rest, curr) => {
       return fmap(([x, y]) => x + y, andThen(curr, rest));
     }, returnP(''));
 }
 
-export function pstring(str) {
+function pstring(str) {
   return sequenceP(str.split('').map(pchar))
     .setLabel('pstring ' + str);
 }
 
-export function stringP(str) {
+function stringP(str) {
   return pstring(str)
     .fmap(res => res.join(''))
     .setLabel('stringP ' + str);
 }
 
-export function zeroOrMore(xP) { // zeroOrMore :: p a -> [a] -> try [a] = p a -> p [a]
+function zeroOrMore(xP) { // zeroOrMore :: p a -> [a] -> try [a] = p a -> p [a]
   return pos => {
     const res1 = xP.run(pos);
     if (res1.isFailure) return Validation.Success(Tuple.Pair([], pos));
@@ -172,7 +170,7 @@ export function zeroOrMore(xP) { // zeroOrMore :: p a -> [a] -> try [a] = p a ->
   };
 }
 
-export function many(xP, times) {
+function many(xP, times) {
   const times_defined = (typeof times !== 'undefined');
   const label = 'many ' + xP.label
         + ((times_defined) ? ' times=' + times : '');
@@ -189,14 +187,14 @@ export function many(xP, times) {
   }, label).setLabel(label);
 }
 
-export function manyChars(xP, times) {
+function manyChars(xP, times) {
   return many(xP, times)
     .fmap(arra => arra.join(''))
     .setLabel('manyChars ' + xP.label
             + ((typeof times !== 'undefined') ? ' times=' + times : ''));
 }
 
-export function many1(xP) {
+function many1(xP) {
   const label = 'many1 ' + xP.label;
   return parser(pos => {
     const res1 = xP.run(pos);
@@ -206,13 +204,13 @@ export function many1(xP) {
   }, label).setLabel(label);
 }
 
-export function manyChars1(xP) {
+function manyChars1(xP) {
   return many1(xP)
     .fmap(arra => arra.join(''))
     .setLabel('manyChars1 ' + xP.label);
 }
 
-export function opt(xP, defaultValue) {
+function opt(xP, defaultValue) {
   const isDefault = (typeof defaultValue !== 'undefined');
   const label = 'opt ' + xP.label
         + (isDefault ? '(default=' + defaultValue + ')' : '');
@@ -225,13 +223,13 @@ export function opt(xP, defaultValue) {
 }
 
 // opt from the book - works ok, but toString() gives strange results
-export function optBook(pX) {
+function optBook(pX) {
   const someP = pX.fmap(Maybe.Just);
   const noneP = returnP(Maybe.Nothing);
   return someP.orElse(noneP);
 }
 
-export function discardSecond(p1, p2) {
+function discardSecond(p1, p2) {
   const label = p1.label + ' discardSecond ' + p2.label;
   return parser(pos => {
     // eslint-disable-next-line no-unused-vars
@@ -239,7 +237,7 @@ export function discardSecond(p1, p2) {
   }, label).setLabel(label);
 }
 
-export function discardFirst(p1, p2) {
+function discardFirst(p1, p2) {
   const label = p1.label + ' discardFirst ' + p2.label;
   return parser(pos => {
     // eslint-disable-next-line no-unused-vars
@@ -247,26 +245,26 @@ export function discardFirst(p1, p2) {
   }, label).setLabel(label);
 }
 
-export function sepBy1Book(px, sep) {
+function sepBy1Book(px, sep) {
   return px.andThen(many(sep.discardFirst(px))).fmap(([r, rlist]) => [r].concat(rlist));
 }
 
 // my version works just fine...
-export function sepBy1(valueP, separatorP) {
+function sepBy1(valueP, separatorP) {
   return many(many1(valueP).discardSecond(opt(separatorP)));
 }
 
-export function between(p1, p2, p3) {
+function between(p1, p2, p3) {
   return p1.discardFirst(p2).discardSecond(p3)
     .setLabel('between ' + p1.label + '/' + p2.label + '/' + p3.label);
 }
 
-export function betweenParens(px) {
+function betweenParens(px) {
   return between(pchar('('), px, pchar(')'))
     .setLabel('betweenParens ' + px.label);
 }
 
-export function bindP(famb, px) {
+function bindP(famb, px) {
   const label = 'unknown';
   return parser(pos => {
     const res = px.run(pos);
@@ -275,24 +273,24 @@ export function bindP(famb, px) {
   }, label).setLabel(label);
 }
 
-export function tapP(px, fn) {
+function tapP(px, fn) {
   return px.bind(res => {
     fn(res);
     return returnP(res);
   });
 }
 
-export function logP(px) {
+function logP(px) {
   // eslint-disable-next-line no-console
   return tapP(px, res => console.log(px.label + ':' + res));
 }
 
-export function pword(word) {
+function pword(word) {
   return trimP(pstring(word))
     .setLabel('pword ' + word);
 }
 
-export function trimP(pX) {
+function trimP(pX) {
   return opt(many(whiteP))
     .discardFirst(pX)
     .discardSecond(opt(many(whiteP)))
@@ -314,7 +312,7 @@ function _setLabel(px, newLabel) {
 }
 
 // the real thing...
-export function parser(fn, label) {
+function parser(fn, label) {
   return {
     type: 'parser',
     label,
@@ -350,3 +348,51 @@ export function parser(fn, label) {
     },
   };
 }
+
+export default {
+  parser,
+  charParser,
+  digitParser,
+  predicateBasedParser,
+  pchar,
+  pdigit,
+  andThen,
+  andThenBind,
+  orElse,
+  fail,
+  succeed,
+  choice,
+  anyOf,
+  lowercaseP,
+  uppercaseP,
+  letterP,
+  digitP,
+  whiteP,
+  fmap,
+  returnP,
+  applyPx,
+  applyP,
+  lift2,
+  sequenceP,
+  sequenceP2,
+  pstring,
+  stringP,
+  zeroOrMore,
+  many,
+  manyChars,
+  many1,
+  manyChars1,
+  opt,
+  optBook,
+  discardSecond,
+  discardFirst,
+  sepBy1Book,
+  sepBy1,
+  between,
+  betweenParens,
+  bindP,
+  tapP,
+  logP,
+  pword,
+  trimP,
+ };

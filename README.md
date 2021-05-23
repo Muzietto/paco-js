@@ -3,6 +3,61 @@ Parser combinators for the browser
 
 File [parsers.js](https://github.com/Muzietto/paco-js/blob/master/src/parsers.js) contains an implementation of __chainable parser combinators__, featuring both __applicative__ and __monadic__ interfaces.
 
+The complete parsers namespace is:
+
+  {
+    parser,
+    charParser,
+    digitParser,
+    predicateBasedParser,
+    pchar,
+    pdigit,
+    andThen,
+    andThenBind,
+    orElse,
+    fail,
+    succeed,
+    choice,
+    anyOf,
+    lowercaseP,
+    uppercaseP,
+    letterP,
+    digitP,
+    whiteP,
+    fmap,
+    returnP,
+    applyPx,
+    applyP,
+    lift2,
+    sequenceP,
+    sequenceP2,
+    pstring,
+    stringP,
+    zeroOrMore,
+    many,
+    manyChars,
+    many1,
+    manyChars1,
+    opt,
+    optBook,
+    discardSecond,
+    discardFirst,
+    sepBy1Book,
+    sepBy1,
+    between,
+    betweenParens,
+    bindP,
+    tapP,
+    logP,
+    pword,
+    trimP,
+   }
+
+## how to use
+
+- import parsers from 'paco-js';
+
+
 Test page is [here](https://muzietto.github.io/geiesmonads/parsers/Mocha_Parser_Combinators_Tests.html).
 
 Live examples page is [here](https://muzietto.github.io/geiesmonads/parsers/Console_Parser_Examples.html).
