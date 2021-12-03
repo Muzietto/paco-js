@@ -1,5 +1,5 @@
 # paco-js
-Parser combinators for the browser
+Parser combinators for the browser. Available at [npm](https://www.npmjs.com/package/paco-js)
 
 File [parsers.js](https://github.com/Muzietto/paco-js/blob/master/src/parsers.js) contains an implementation of __chainable parser combinators__, featuring both __applicative__ and __monadic__ interfaces.
 
