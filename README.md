@@ -42,8 +42,9 @@ The complete parsers namespace is:
       optBook,
       discardSecond,
       discardFirst,
-      sepBy1Book,
       sepBy1,
+      sepBy1Book,
+      sepBy,
       between,
       betweenParens,
       bindP,
@@ -61,7 +62,10 @@ Test page for all the parsers (works also as progressive tutorial) is [here](htt
 
 Live examples page is [here](https://muzietto.github.io/geiesmonads/parsers/Console_Parser_Examples.html). Open devtools to see how the code works.
 
-More examples - a complete converter from Markdown to HTML - are provided [here](https://github.com/Muzietto/paco-js/tree/master/samples/markdown2html).
+More examples are provided:
+- a complete converter from Markdown to HTML is [here](https://github.com/Muzietto/paco-js/tree/master/samples/markdown2html).
+- a complete parser for JSON strings is [here](https://github.com/Muzietto/paco-js/tree/master/samples/json-parser),
+with a complete live test page [here](https://muzietto.github.io/geiesmonads/parsers/Mocha_JSON_Parser_Tests.html)
 
 NB - with a big credit due to [Understanding Parser Combinators](https://fsharpforfunandprofit.com/posts/understanding-parser-combinators/) and to [Paco](https://github.com/gabrielelana/paco).
 

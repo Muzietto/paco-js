@@ -1,7 +1,7 @@
 {
   "name": "paco-js",
-  "version": "1.0.1",
-  "description": "parser combinators for the browser",
+  "version": "1.0.2",
+  "description": "parser combinators in JS for the browser and nodejs backends",
   "main": "src/parsers.js",
   "repository": {
     "type": "git",
@@ -12,7 +12,7 @@
     "combinators"
   ],
   "author": "Marco Faustinelli (Muzietto)",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Muzietto/paco-js/issues"
   },

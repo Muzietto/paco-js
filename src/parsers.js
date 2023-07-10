@@ -1,8 +1,32 @@
+/*
+The MIT License (MIT)
+
+Copyright (c) 2023 Marco Faustinelli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 // cfr. "Understanding Parser Combinators" (F# for Fun and Profit)
 
 import {
-  Tuple,
-  Position,
+  Tuple, // couples and triples
+  Position, // a 2D buffer and two pointers: Position(rows = [], row = 0, col = 0)
 } from './lib/tuples';
 import { Maybe } from './lib/maybe'; // Just or Nothing
 import { Validation } from './lib/validation'; // Success or Failure
@@ -75,6 +99,7 @@ function orElse(p1, p2) {
 }
 
 export const fail = parser(pos => Validation.Failure(Tuple.Triple('', 'fail', pos)));
+  return parser(pos => Validation.Success(Tuple.Pair(value, pos)), value);
 
 export const succeed = parser(pos => Validation.Success(Tuple.Pair(Tuple.Pair('', pos), 'succeed')));
 
@@ -97,14 +122,16 @@ const whiteP = anyOf([' ', '\t', '\n', '\r']).setLabel('whiteP');
 function fmap(fab, parser1) {
   const label = parser1.label + ' fmap ' + fab.toString();
   return parser(pos => {
-    const res = parser1.run(pos);
+    const res = parser1.run(pos);  return parser(pos => Validation.Success(Tuple.Pair(value, pos)), value);
+
     if (res.isSuccess) return Validation.Success(Tuple.Pair(fab(res.value[0]), res.value[1]));
     return Validation.Failure(Tuple.Triple(label, res.value[1], res.value[2]));
   }, label);
 }
 
 function returnP(value) {
-  return parser(pos => Validation.Success(Tuple.Pair(value, pos)), value);
+  return parser(pos => Validation.Success(Tuple.Pair(value, pos)))
+    .setLabel(`returnP ${value.toString()}`);
 }
 
 // parser(a -> b) -> parser(a) -> parser(b)
@@ -245,13 +272,20 @@ function discardFirst(p1, p2) {
   }, label).setLabel(label);
 }
 
-function sepBy1Book(px, sep) {
-  return px.andThen(many(sep.discardFirst(px))).fmap(([r, rlist]) => [r].concat(rlist));
+function sepBy1(px, sep) {
+  return px.andThen(many(sep.discardFirst(px)))
+    .fmap(([r, rlist]) => [r].concat(rlist));
 }
 
-// my version works just fine...
-function sepBy1(valueP, separatorP) {
-  return many(many1(valueP).discardSecond(opt(separatorP)));
+// my version works just fine (almost - succeeds akso with zero matches)...
+function sepBy1Marco(valueP, separatorP) {
+  return many(many1(valueP).discardSecond(opt(separatorP)))
+    .fmap(res => res.map(([x]) => x));
+}
+
+// sepBy1 working on zero occurrences
+function sepBy(px, sep) {
+  return sepBy1(px, sep).orElse(returnP([]));
 }
 
 function between(p1, p2, p3) {
@@ -386,8 +420,9 @@ export default {
   optBook,
   discardSecond,
   discardFirst,
-  sepBy1Book,
   sepBy1,
+  sepBy1Book,
+  sepBy,
   between,
   betweenParens,
   bindP,
