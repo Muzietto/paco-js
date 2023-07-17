@@ -5,6 +5,7 @@ import {
 import {
   Validation,
 } from './lib/validation';
+// in order to use the npm dependency, import from 'paco-js'
 import {
   parser,
   charParser,
